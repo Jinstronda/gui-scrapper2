@@ -1,0 +1,12 @@
+# Android UI Automation
+uiautomator2==3.2.5
+
+# ADB Communication
+adb-shell==0.4.4
+
+# Image Handling (updated for Python 3.13 compatibility)
+Pillow>=10.4.0
+
+# Optional: Excel export (if needed later)
+# pandas>=2.0.0
+# openpyxl>=3.0.0

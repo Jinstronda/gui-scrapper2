@@ -1,0 +1,61 @@
+2025-11-13 13:56:42,232 - INFO - ============================================================
+2025-11-13 13:56:42,232 - INFO - Android Attendee Scraper - Starting
+2025-11-13 13:56:42,233 - INFO - ============================================================
+2025-11-13 13:56:42,246 - INFO - Database initialized: attendees.db
+2025-11-13 13:56:42,246 - INFO - Connecting to Android device...
+2025-11-13 13:56:42,941 - INFO - Connected to default device
+2025-11-13 13:56:43,013 - INFO - Device info: {'currentPackageName': 'com.brella', 'displayHeight': 2220, 'displayRotation': 0, 'displaySizeDpX': 393, 'displaySizeDpY': 807, 'displayWidth': 1080, 'productName': 'sdk_gphone64_x86_64', 'screenOn': True, 'sdkInt': 36, 'naturalOrientation': True}
+2025-11-13 13:56:43,015 - INFO - Attendees in database: 0
+2025-11-13 13:56:43,015 - INFO - Starting scraper...
+2025-11-13 13:56:43,397 - INFO - Processing: FOUNDER / CEO (VISIONARY FOUNDERS) (index 0)
+2025-11-13 13:56:45,008 - INFO - Saved: Change Event
+2025-11-13 13:56:45,008 - INFO - Saved 1: Change Event
+2025-11-13 13:56:45,243 - WARNING - Could not extract name at index 1
+2025-11-13 13:56:45,397 - WARNING - Could not extract name at index 2
+2025-11-13 13:56:45,445 - INFO - Reached end of current view
+2025-11-13 13:56:45,445 - INFO - Scraping completed. Total scraped: 1
+2025-11-13 13:56:45,447 - INFO - ============================================================
+2025-11-13 13:56:45,447 - INFO - Scraping completed!
+2025-11-13 13:56:45,447 - INFO - Previously in DB: 0
+2025-11-13 13:56:45,447 - INFO - Newly scraped: 1
+2025-11-13 13:56:45,447 - INFO - Total in DB: 1
+2025-11-13 13:56:45,448 - INFO - ============================================================
+2025-11-13 13:57:03,305 - INFO - ============================================================
+2025-11-13 13:57:03,306 - INFO - Android Attendee Scraper - Starting
+2025-11-13 13:57:03,306 - INFO - ============================================================
+2025-11-13 13:57:03,307 - INFO - Database initialized: attendees.db
+2025-11-13 13:57:03,307 - INFO - Connecting to Android device...
+2025-11-13 13:57:04,011 - INFO - Connected to default device
+2025-11-13 13:57:04,105 - INFO - Device info: {'currentPackageName': 'com.brella', 'displayHeight': 2220, 'displayRotation': 0, 'displaySizeDpX': 393, 'displaySizeDpY': 807, 'displayWidth': 1080, 'productName': 'sdk_gphone64_x86_64', 'screenOn': True, 'sdkInt': 36, 'naturalOrientation': True}
+2025-11-13 13:57:04,106 - INFO - Attendees in database: 1
+2025-11-13 13:57:04,106 - INFO - Starting scraper...
+2025-11-13 13:57:04,570 - INFO - Processing: FOUNDER / CEO (VISIONARY FOUNDERS) (index 0)
+2025-11-13 13:57:06,168 - WARNING - Duplicate attendee: Change Event
+2025-11-13 13:57:06,168 - INFO - Saved 1: Change Event
+2025-11-13 13:57:06,372 - WARNING - Could not extract name at index 1
+2025-11-13 13:57:06,519 - WARNING - Could not extract name at index 2
+2025-11-13 13:57:06,580 - INFO - Reached end of current view
+2025-11-13 13:57:06,581 - INFO - Scraping completed. Total scraped: 1
+2025-11-13 13:57:06,582 - INFO - ============================================================
+2025-11-13 13:57:06,582 - INFO - Scraping completed!
+2025-11-13 13:57:06,582 - INFO - Previously in DB: 1
+2025-11-13 13:57:06,582 - INFO - Newly scraped: 1
+2025-11-13 13:57:06,582 - INFO - Total in DB: 1
+2025-11-13 13:57:06,582 - INFO - ============================================================
+2025-11-13 13:57:15,139 - INFO - ============================================================
+2025-11-13 13:57:15,139 - INFO - Android Attendee Scraper - Starting
+2025-11-13 13:57:15,139 - INFO - ============================================================
+2025-11-13 13:57:15,140 - INFO - Database initialized: attendees.db
+2025-11-13 13:57:15,141 - INFO - Connecting to Android device...
+2025-11-13 13:57:15,824 - INFO - Connected to default device
+2025-11-13 13:57:15,900 - INFO - Device info: {'currentPackageName': 'com.brella', 'displayHeight': 2220, 'displayRotation': 0, 'displaySizeDpX': 393, 'displaySizeDpY': 807, 'displayWidth': 1080, 'productName': 'sdk_gphone64_x86_64', 'screenOn': True, 'sdkInt': 36, 'naturalOrientation': True}
+2025-11-13 13:57:15,901 - INFO - Attendees in database: 1
+2025-11-13 13:57:15,901 - INFO - Starting scraper...
+2025-11-13 13:57:16,000 - WARNING - No items found, stopping
+2025-11-13 13:57:16,001 - INFO - Scraping completed. Total scraped: 0
+2025-11-13 13:57:16,002 - INFO - ============================================================
+2025-11-13 13:57:16,002 - INFO - Scraping completed!
+2025-11-13 13:57:16,002 - INFO - Previously in DB: 1
+2025-11-13 13:57:16,002 - INFO - Newly scraped: 0
+2025-11-13 13:57:16,002 - INFO - Total in DB: 1
+2025-11-13 13:57:16,002 - INFO - ============================================================
