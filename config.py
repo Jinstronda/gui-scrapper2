@@ -2,8 +2,8 @@
 DEVICE_SERIAL = None  # None for auto-detect, or specify serial number
 
 # Timeouts (in seconds)
-CLICK_TIMEOUT = 0.2
-PAGE_LOAD_TIMEOUT = 0.8
+CLICK_TIMEOUT = 0.5
+PAGE_LOAD_TIMEOUT = 1.5
 SCROLL_WAIT = 0.01
 
 # Scraping Behavior
