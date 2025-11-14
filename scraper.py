@@ -7,6 +7,33 @@ from extractor import extract_from_detail_page
 logger = logging.getLogger(__name__)
 
 
+def check_and_recover_from_main_page(device):
+    """
+    Detect if we're on the main page and navigate back to attendee list.
+    Returns True if we recovered, False if already on correct page.
+    """
+    # Check if "People" button exists (unique to main page)
+    if device(content_desc="People").exists:
+        logger.warning("Detected main page! Navigating back to attendees...")
+
+        # Click on "People" tab
+        device(content_desc="People").click()
+        time.sleep(1.0)
+
+        # Click on "Attendees" tab at the top (after People page loads)
+        # Attendees tab should appear after clicking People
+        if device(text="Attendees").exists:
+            device(text="Attendees").click()
+            time.sleep(1.0)
+            logger.info("Successfully navigated back to attendee list")
+            return True
+        else:
+            logger.warning("Could not find Attendees tab after clicking People")
+            return False
+
+    return False
+
+
 def run_scraper(device):
     scraped_count = 0
     clicked_buttons = set()  # Track content-desc of buttons we've clicked
@@ -24,6 +51,9 @@ def run_scraper(device):
             recyclerview = device(className="androidx.recyclerview.widget.RecyclerView")
             if not recyclerview.exists:
                 logger.warning("RecyclerView not found, scrolling...")
+                # Check if we accidentally navigated to main page and recover
+                if check_and_recover_from_main_page(device):
+                    continue  # Recovery successful, restart loop
                 device.swipe(500, 1500, 500, 700, duration=0.3)
                 time.sleep(1.0)
                 continue
