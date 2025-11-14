@@ -8,81 +8,122 @@ logger = logging.getLogger(__name__)
 
 def extract_from_detail_page(device):
     time.sleep(config.PAGE_LOAD_TIMEOUT)
-    
+
+    # Extract texts from top first (to get name, job title, company)
     xml = device.dump_hierarchy()
     root = ET.fromstring(xml)
-    
-    # Extract all TextViews
+
     all_texts = []
     for elem in root.iter():
         if elem.get('class') == 'android.widget.TextView':
             text = elem.get('text', '').strip()
             if text:
                 all_texts.append(text)
-    
-    logger.debug(f"All texts found: {all_texts}")
+
+    logger.debug(f"Texts before scroll (first 15): {all_texts[:15]}")
+
+    # Gentle scroll to see Industry/Job Function/Operates in (don't scroll too much!)
+    device.swipe(500, 1400, 500, 1000, duration=0.3)  # Small scroll (400px)
+    time.sleep(0.3)
+
+    # Extract after scroll
+    xml = device.dump_hierarchy()
+    root = ET.fromstring(xml)
+
+    for elem in root.iter():
+        if elem.get('class') == 'android.widget.TextView':
+            text = elem.get('text', '').strip()
+            if text and text not in all_texts:
+                all_texts.append(text)
+
+    # Second small scroll
+    device.swipe(500, 1400, 500, 1000, duration=0.3)  # Small scroll (400px)
+    time.sleep(0.3)
+
+    # Extract again after second scroll
+    xml = device.dump_hierarchy()
+    root = ET.fromstring(xml)
+
+    for elem in root.iter():
+        if elem.get('class') == 'android.widget.TextView':
+            text = elem.get('text', '').strip()
+            if text and text not in all_texts:
+                all_texts.append(text)
+
+    logger.debug(f"Total texts collected: {len(all_texts)}")
     
     # Initialize data
     data = {
         'name': None,
+        'job_title': None,
+        'company': None,
         'industry': None,
         'job_function': None,
         'operates_in': None
     }
-    
-    # Find name - look for large name TextView (usually between index 2-6)
-    # Skip common UI labels
-    skip_texts = ['Introduction', 'Interests', 'Chat', 'Suggest meeting', 
+
+    # Find name - look for proper name (2-4 words, letters and spaces)
+    skip_texts = ['Introduction', 'Interests', 'Chat', 'Suggest meeting',
                   'Navigate up', 'Operates in', 'Industry', 'Job Function']
-    
+
+    name_index = None
     for i, text in enumerate(all_texts):
-        # Name is usually a proper name (2-4 words, letters and spaces)
-        if (text not in skip_texts and 
-            len(text) > 5 and 
+        if (text not in skip_texts and
+            len(text) > 5 and
             2 <= len(text.split()) <= 4 and
             all(c.isalpha() or c.isspace() for c in text) and
             data['name'] is None):
             data['name'] = text
-            logger.debug(f"Found name: {text}")
+            name_index = i
             break
-    
+
+    # Job title and Company come AFTER the name as separate TextViews
+    if name_index is not None:
+        # Job title is the next TextView after name
+        if name_index + 1 < len(all_texts):
+            job_title_candidate = all_texts[name_index + 1].strip()
+            # Make sure it's not a label or skip text
+            if job_title_candidate not in skip_texts and len(job_title_candidate) > 0:
+                data['job_title'] = job_title_candidate
+
+        # Company is the TextView after job title
+        if name_index + 2 < len(all_texts):
+            company_candidate = all_texts[name_index + 2].strip()
+            # Make sure it's not a label or skip text
+            if company_candidate not in skip_texts and len(company_candidate) > 0:
+                data['company'] = company_candidate
+
+
     # Parse labeled fields
     for i, text in enumerate(all_texts):
         if text == config.FIELD_LABEL_INDUSTRY and i + 1 < len(all_texts):
             next_text = all_texts[i + 1]
             if next_text not in skip_texts:
                 data['industry'] = next_text
-                logger.debug(f"Found industry: {next_text}")
-        
+
         elif text == config.FIELD_LABEL_JOB_FUNCTION and i + 1 < len(all_texts):
             next_text = all_texts[i + 1]
             if next_text not in skip_texts:
                 data['job_function'] = next_text
-                logger.debug(f"Found job function: {next_text}")
-        
+
         elif text == config.FIELD_LABEL_OPERATES_IN and i + 1 < len(all_texts):
-            # Collect countries (skip labels and UI elements)
             countries = []
             j = i + 1
             while j < len(all_texts):
                 next_text = all_texts[j]
-                # Stop if we hit another label
                 if next_text in [config.FIELD_LABEL_INDUSTRY, config.FIELD_LABEL_JOB_FUNCTION]:
                     break
-                # Add if it looks like a country name (not a label)
-                if (next_text not in skip_texts and 
-                    len(next_text) > 2 and 
+                if (next_text not in skip_texts and
+                    len(next_text) > 2 and
                     all(c.isalpha() or c.isspace() for c in next_text)):
                     countries.append(next_text)
                 j += 1
-                if len(countries) >= 5:  # Max 5 countries
+                if len(countries) >= 5:
                     break
-            
+
             if countries:
                 data['operates_in'] = ', '.join(countries)
-                logger.debug(f"Found operates in: {data['operates_in']}")
-    
-    logger.info(f"Extracted from detail page: {data}")
+
     return data
 
 

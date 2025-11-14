@@ -8,15 +8,12 @@ def connect_device(serial=None):
     try:
         if serial:
             device = u2.connect(serial)
-            logger.info(f"Connected to device: {serial}")
         else:
             device = u2.connect()
-            logger.info("Connected to default device")
-        
-        logger.info(f"Device info: {device.info}")
+
         return device
     except Exception as e:
-        logger.error(f"Failed to connect to device: {e}")
+        logger.error(f"Failed to connect: {e}")
         raise
 
 

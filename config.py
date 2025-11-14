@@ -2,16 +2,16 @@
 DEVICE_SERIAL = None  # None for auto-detect, or specify serial number
 
 # Timeouts (in seconds)
-CLICK_TIMEOUT = 0.5
-PAGE_LOAD_TIMEOUT = 1.5
+CLICK_TIMEOUT = 0.3
+PAGE_LOAD_TIMEOUT = 1.0
 SCROLL_WAIT = 0.01
 
 # Scraping Behavior
-MAX_ATTENDEES = 5  # Testing with 5 attendees first
+MAX_ATTENDEES = None  # No limit - scrape all attendees
 SAVE_SCREENSHOTS_ON_ERROR = True
 
 # Database
-DB_PATH = "attendees.db"
+DB_PATH = "attendees_v2.db"  # New database with job_title and company columns
 
 # Screenshots
 SCREENSHOT_DIR = "screenshots"

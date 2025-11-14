@@ -13,11 +13,9 @@ logger = None
 def main():
     global logger
     
-    # Setup logging
+    # Setup logging with minimal output
     logger = setup_logging()
-    logger.info("=" * 60)
-    logger.info("Android Attendee Scraper - Starting")
-    logger.info("=" * 60)
+    logger.info("Scraper started")
     
     try:
         # Create screenshot directory
@@ -26,28 +24,20 @@ def main():
         # Initialize database
         init_db()
         
-        # Connect to device
-        logger.info("Connecting to Android device...")
+        # Connect to device and init
         device = connect_device(config.DEVICE_SERIAL)
-        
-        # Get initial count
         initial_count = get_attendee_count()
-        logger.info(f"Attendees in database: {initial_count}")
         
         # Run scraper
         scraped_count = run_scraper(device)
         
         # Final summary
         final_count = get_attendee_count()
-        logger.info("=" * 60)
-        logger.info(f"Scraping completed!")
-        logger.info(f"Previously in DB: {initial_count}")
-        logger.info(f"Newly scraped: {scraped_count}")
-        logger.info(f"Total in DB: {final_count}")
-        logger.info("=" * 60)
+        logger.info(f"DONE: {scraped_count} new | Total: {final_count}")
         
     except KeyboardInterrupt:
-        logger.info("\nScraping interrupted by user")
+        final_count = get_attendee_count()
+        logger.info(f"\nSTOPPED by user | Total: {final_count}")
         sys.exit(0)
     except Exception as e:
         logger.error(f"Fatal error: {e}", exc_info=True)
