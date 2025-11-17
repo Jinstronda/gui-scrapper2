@@ -9,28 +9,56 @@ logger = logging.getLogger(__name__)
 
 def check_and_recover_from_main_page(device):
     """
-    Detect if we're on the main page and navigate back to attendee list.
+    Detect if we're on the main page and navigate to attendee list.
+    Navigation flow: Event Home → Menu → Attendees
     Returns True if we recovered, False if already on correct page.
     """
-    # Check if "People" button exists (unique to main page)
-    if device(content_desc="People").exists:
-        logger.warning("Detected main page! Navigating back to attendees...")
+    # Check if we're already on attendees page (RecyclerView exists)
+    if device(className="androidx.recyclerview.widget.RecyclerView").exists:
+        logger.debug("Already on attendees page")
+        return False
 
-        # Click on "People" tab
-        device(content_desc="People").click()
-        time.sleep(1.0)
+    logger.warning("Not on attendees page! Attempting to navigate...")
 
-        # Click on "Attendees" tab at the top (after People page loads)
-        # Attendees tab should appear after clicking People
-        if device(text="Attendees").exists:
-            device(text="Attendees").click()
-            time.sleep(1.0)
-            logger.info("Successfully navigated back to attendee list")
+    # Check if we're on the menu/people page (attendees tab visible)
+    if device(text="attendees").exists:
+        logger.info("On menu page, clicking 'attendees' tab...")
+        device(text="attendees").click()
+        time.sleep(2.0)
+
+        # Verify we made it to attendees list
+        if device(className="androidx.recyclerview.widget.RecyclerView").exists:
+            logger.info("Successfully navigated to attendee list")
             return True
         else:
-            logger.warning("Could not find Attendees tab after clicking People")
+            logger.warning("Clicked attendees but RecyclerView not found")
             return False
 
+    # Check if we're on event home page (Menu button visible)
+    if device(text="Menu").exists:
+        logger.info("On event home page, clicking 'Menu' button...")
+        device(text="Menu").click()
+        time.sleep(2.0)
+
+        # Now click attendees tab
+        if device(text="attendees").exists:
+            logger.info("Menu opened, clicking 'attendees' tab...")
+            device(text="attendees").click()
+            time.sleep(2.0)
+
+            # Verify we made it to attendees list
+            if device(className="androidx.recyclerview.widget.RecyclerView").exists:
+                logger.info("Successfully navigated to attendee list")
+                return True
+            else:
+                logger.warning("Clicked attendees but RecyclerView not found")
+                return False
+        else:
+            logger.error("Menu opened but 'attendees' tab not found!")
+            return False
+
+    # If we can't find Menu or attendees, we're in an unknown state
+    logger.error("Unknown page state - cannot find Menu or attendees elements")
     return False
 
 
@@ -125,8 +153,19 @@ def run_scraper(device):
 
                 except Exception as e:
                     logger.error(f"Error with button {i}: {e}")
-                    device.press("back")
-                    time.sleep(config.CLICK_TIMEOUT)
+                    # Check if it's a stale button reference error
+                    if "UiObjectNotFoundException" in str(e):
+                        logger.warning("Stale button reference, restarting iteration...")
+                        break  # Break out of button loop, restart from top
+
+                    # Only press back if we're NOT on the list page (i.e., we're on a detail page)
+                    # This prevents accidentally exiting the app if we're on the home page
+                    if not device(className="androidx.recyclerview.widget.RecyclerView").exists:
+                        logger.info("Not on list page, pressing back to recover...")
+                        device.press("back")
+                        time.sleep(config.CLICK_TIMEOUT)
+                    else:
+                        logger.info("Already on list page, no need to press back")
                     continue
 
             # Scroll to reveal more
@@ -136,7 +175,8 @@ def run_scraper(device):
 
         except Exception as e:
             logger.error(f"Error: {e}")
-            device.press("back")
+            # Do NOT press back here - let the recovery function handle navigation
+            # Pressing back blindly could exit the app if we're on the home page
             time.sleep(config.CLICK_TIMEOUT)
 
     return scraped_count
